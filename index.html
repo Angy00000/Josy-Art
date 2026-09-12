@@ -19,9 +19,7 @@
     --serif: 'Fraunces', serif;
     --sans: 'Manrope', sans-serif;
     --maxw: 1280px;
-    --promo-h: 34px;
   }
-  @media(max-width:640px){:root{--promo-h:44px;}}
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
@@ -46,9 +44,8 @@
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px; position:relative;}
   @media(max-width:640px){.wrap{padding:0 20px;}}
 
-  /* ---------- motif géométrique tissé (inspiré des nattes sérère de Fadiouth) ---------- */
+  /* ---------- liseré géométrique (inspiré des nattes tissées sérère de Fadiouth) ---------- */
   .motif-strip{
-    position:fixed; top:var(--promo-h); left:0; right:0; z-index:109;
     height:8px;
     background-image:
       linear-gradient(45deg, var(--indigo) 25%, transparent 25%),
@@ -60,27 +57,114 @@
     background-color:var(--sable);
   }
 
-  /* ---------- bandeau annonces (inspiré de la barre promo boohoo) ---------- */
-  .promo-bar{
-    position:fixed; top:0; left:0; right:0; z-index:110;
-    height:var(--promo-h); background:var(--encre); color:var(--ivoire);
-    display:flex; align-items:center; justify-content:center;
-    font-size:12px; letter-spacing:.02em; overflow:hidden;
+  /* ---------- panneaux et badges (langage visuel TCH, appliqué en statique) ---------- */
+  .panel{
+    background:var(--ivoire); border-radius:5px;
+    box-shadow:0 18px 40px -22px rgba(22,19,17,.28), 0 2px 8px rgba(22,19,17,.05);
+    padding:36px;
   }
-  .promo-bar span{
-    position:absolute; opacity:0; transition:opacity .5s ease;
-    padding:0 20px; text-align:center;
+  @media(max-width:640px){.panel{padding:24px;}}
+  .spec-table{width:100%; border-collapse:collapse; margin:18px 0 24px;}
+  .spec-table tr{border-bottom:1px solid rgba(22,19,17,.08);}
+  .spec-table tr:last-child{border-bottom:none;}
+  .spec-table th, .spec-table td{text-align:left; padding:11px 0; font-weight:400; font-size:14.5px;}
+  .spec-table th{
+    width:38%; color:var(--nacre); font-size:12px; letter-spacing:.02em;
+    text-transform:none; vertical-align:top; padding-top:12px;
   }
-  .promo-bar span.show{opacity:1; position:relative;}
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:11px; padding:3px 10px; border-radius:20px;
+    background:rgba(63,174,143,.14); color:#2c7d64; margin-left:10px;
+    white-space:nowrap;
+  }
+  .badge::before{content:''; width:6px; height:6px; border-radius:50%; background:#3fae8f;}
+  .badge.sold{background:rgba(139,58,58,.1); color:#8b3a3a;}
+  .badge.sold::before{background:#8b3a3a;}
 
-  /* ---------- réassurance (inspirée de la ligne paiement/livraison boohoo) ---------- */
-  .trust-row{
-    display:grid; grid-template-columns:repeat(4,1fr); gap:24px;
-    padding:34px 0; border-top:1px solid rgba(22,19,17,.08); border-bottom:1px solid rgba(22,19,17,.08);
+  /* ---------- barre de chiffres clés (façon TCH) ---------- */
+  .stats-bar{
+    background:var(--encre); color:var(--ivoire);
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border-top:1px solid rgba(245,243,239,.12);
   }
-  @media(max-width:760px){.trust-row{grid-template-columns:repeat(2,1fr); row-gap:26px;}}
-  .trust-item{display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; font-size:12.5px; color:#4b453f;}
-  .trust-item svg{width:22px; height:22px; color:var(--indigo);}
+  @media(max-width:760px){.stats-bar{grid-template-columns:repeat(2,1fr);}}
+  .stats-bar div{
+    padding:26px 18px; text-align:center;
+    border-right:1px solid rgba(245,243,239,.12);
+  }
+  .stats-bar div:last-child{border-right:none;}
+  @media(max-width:760px){.stats-bar div:nth-child(2n){border-right:none;} .stats-bar div{border-bottom:1px solid rgba(245,243,239,.12);}}
+  .stats-bar .num{font-family:var(--serif); font-style:italic; font-size:20px; display:block; margin-bottom:4px;}
+  .stats-bar .lbl{font-size:11.5px; color:var(--sable); letter-spacing:.02em;}
+
+  /* ---------- panier ---------- */
+  .cart-btn{
+    display:flex; align-items:center; gap:6px; cursor:pointer; background:none; border:none;
+    font-family:var(--sans); font-size:14px; color:inherit; padding:0;
+  }
+  .cart-overlay{
+    position:fixed; inset:0; background:rgba(22,19,17,.5); z-index:250;
+    opacity:0; pointer-events:none; transition:opacity .35s ease;
+  }
+  .cart-overlay.open{opacity:1; pointer-events:auto;}
+  .cart-drawer{
+    position:fixed; top:0; right:0; bottom:0; width:min(420px,100%); z-index:251;
+    background:var(--ivoire); box-shadow:-16px 0 40px rgba(0,0,0,.2);
+    transform:translateX(100%); transition:transform .4s ease;
+    display:flex; flex-direction:column;
+  }
+  .cart-overlay.open .cart-drawer{transform:translateX(0);}
+  .cart-head{display:flex; justify-content:space-between; align-items:center; padding:22px 24px; border-bottom:1px solid rgba(22,19,17,.1);}
+  .cart-head h3{font-family:var(--serif); font-style:italic; font-weight:400; font-size:20px;}
+  .cart-body{flex:1; overflow-y:auto; padding:22px 24px;}
+  .cart-item{display:flex; justify-content:space-between; gap:10px; padding:14px 0; border-bottom:1px solid rgba(22,19,17,.08); font-size:14px;}
+  .cart-item .ci-meta{color:var(--nacre); font-size:12.5px; margin-top:2px;}
+  .cart-item .ci-remove{background:none; border:none; color:var(--nacre); cursor:pointer; font-size:13px; text-decoration:underline; padding:0;}
+  .cart-empty{color:var(--nacre); font-size:14px; padding:20px 0;}
+  .cart-field{margin-bottom:14px;}
+  .cart-field label{display:block; font-size:12px; color:var(--nacre); margin-bottom:5px;}
+  .cart-field input{
+    width:100%; border:1px solid rgba(22,19,17,.18); border-radius:3px;
+    padding:10px 12px; font-family:var(--sans); font-size:14px; background:var(--ivoire);
+  }
+  .pay-options{display:flex; gap:10px; margin-bottom:6px;}
+  .pay-options label{
+    flex:1; border:1px solid rgba(22,19,17,.18); border-radius:3px; padding:10px; text-align:center;
+    font-size:13px; cursor:pointer;
+  }
+  .pay-options input{margin-right:6px;}
+  .cart-total{display:flex; justify-content:space-between; font-size:15px; margin:18px 0; font-weight:500;}
+  .cart-foot{padding:20px 24px; border-top:1px solid rgba(22,19,17,.1);}
+  .cart-send{width:100%; text-align:center; cursor:pointer;}
+  .cart-send:disabled{opacity:.4; cursor:not-allowed;}
+
+  /* ---------- configurateur produit (par coloris) ---------- */
+  .colorway-row{
+    display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px;
+    padding:14px 0; border-bottom:1px solid rgba(22,19,17,.08);
+  }
+  .colorway-row:last-child{border-bottom:none;}
+  .colorway-row .cw-name{display:flex; align-items:center; gap:9px; font-size:14px; flex:1 1 180px;}
+  .colorway-row select{
+    border:1px solid rgba(22,19,17,.18); border-radius:3px; padding:6px 8px;
+    font-family:var(--sans); font-size:12.5px; background:var(--ivoire); color:var(--encre);
+  }
+  .add-btn{
+    font-size:12.5px; padding:7px 14px; border:1px solid var(--encre); border-radius:3px;
+    background:var(--encre); color:var(--ivoire); cursor:pointer; white-space:nowrap;
+  }
+
+  /* ---------- fiche produit (liste de coloris, style catalogue épuré) ---------- */
+  .product-material{font-size:14px; color:var(--nacre);}
+  .colorway-list{list-style:none;}
+  .colorway-list li{margin-bottom:11px; display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .colorway-list a{
+    display:inline-flex; align-items:center; gap:10px; font-size:14.5px;
+    padding-bottom:2px; border-bottom:1px solid transparent; transition:border-color .3s ease;
+  }
+  .colorway-list a:hover{border-bottom-color:var(--encre);}
+  .colorway-list .dot{width:11px; height:11px; border-radius:50%; flex:0 0 auto; border:1px solid rgba(0,0,0,.12);}
 
   /* ---------- motif coquillage (identité graphique liée au logo) ---------- */
   .shell{display:block;}
@@ -122,7 +206,7 @@
 
   /* ---------- nav ---------- */
   header{
-    position:fixed; top:calc(var(--promo-h) + 8px); left:0; right:0; z-index:100;
+    position:fixed; top:0; left:0; right:0; z-index:100;
     padding:20px 0;
     transition:background .5s ease, padding .4s ease, box-shadow .4s ease;
   }
@@ -158,7 +242,7 @@
     text-align:center; overflow:hidden;
     background:radial-gradient(ellipse at 50% 20%, #221d19 0%, var(--encre) 65%);
     color:var(--ivoire);
-    padding:calc(120px + var(--promo-h) + 8px) 24px 90px;
+    padding:120px 24px 90px;
   }
   .hero .shell-watermark{
     top:50%; left:50%; width:640px; height:640px;
@@ -363,13 +447,6 @@
   </defs>
 </svg>
 
-<div class="promo-bar" id="promoBar">
-  <span class="show">🐚 Édition très limitée — une pièce par coloris</span>
-  <span>Paiement Wave &amp; Orange Money accepté</span>
-  <span>Commande confirmée directement sur WhatsApp</span>
-</div>
-<div class="motif-strip"></div>
-
 <header id="siteHeader">
   <div class="wrap">
     <nav>
@@ -378,12 +455,14 @@
         <span class="logo-word">JOSY</span>
       </a>
       <div class="nav-links">
+        <a href="#top">Accueil</a>
+        <a href="#boutique">Boutique</a>
         <a href="#histoire">Notre Histoire</a>
-        <a href="#boutique">La Collection</a>
+        <a href="#manifesto">Manifeste</a>
         <a href="#contact">Contact</a>
       </div>
       <div class="nav-right">
-        <a href="https://wa.me/221785821289?text=Bonjour%20JOSY%2C%20je%20souhaite%20commander">Commander sur WhatsApp</a>
+        <button class="cart-btn" id="cartBtn" aria-label="Voir le panier">🛍 Panier (<span id="cartCount">0</span>)</button>
       </div>
       <button class="burger" id="burgerBtn" aria-label="Ouvrir le menu">
         <span></span><span></span><span></span>
@@ -397,10 +476,12 @@
     <span class="logo-word">JOSY</span>
     <button class="close-btn" id="closeMenuBtn" aria-label="Fermer le menu">×</button>
   </div>
+  <a href="#top">Accueil</a>
+  <a href="#boutique">Boutique</a>
   <a href="#histoire">Notre Histoire</a>
-  <a href="#boutique">La Collection</a>
+  <a href="#manifesto">Manifeste</a>
   <a href="#contact">Contact</a>
-  <a href="https://wa.me/221785821289">Commander sur WhatsApp</a>
+  <button class="cart-btn" id="cartBtnMobile" style="margin-top:10px;">🛍 Voir le panier (<span id="cartCountMobile">0</span>)</button>
 </div>
 
 <div id="top"></div>
@@ -414,12 +495,19 @@
   <a href="#boutique" class="btn btn-light hero-cta">Découvrir la collection</a>
 </section>
 
+<div class="stats-bar">
+  <div><span class="num">14.17°N</span><span class="lbl">Fadiouth, Sénégal</span></div>
+  <div><span class="num">1</span><span class="lbl">Collection actuelle</span></div>
+  <div><span class="num">100%</span><span class="lbl">Lin naturel</span></div>
+  <div><span class="num">4</span><span class="lbl">Coloris disponibles</span></div>
+</div>
+
 <div class="wave" style="color:var(--encre);">
   <svg viewBox="0 0 1440 90" preserveAspectRatio="none"><path d="M0,30 C220,80 420,0 700,26 C980,52 1180,10 1440,40 L1440,90 L0,90 Z" fill="currentColor"/></svg>
 </div>
 
 <!-- MANIFESTO -->
-<section class="manifesto">
+<section class="manifesto" id="manifesto">
   <div class="wrap reveal">
     <span class="quote-mark">“</span>
     <p>Porter JOSY, c'est affirmer son style sans avoir besoin de le crier. C'est honorer ses origines tout en regardant vers l'avenir. C'est choisir un luxe sincère, où chaque vêtement porte une histoire, une culture et une vision.</p>
@@ -442,85 +530,63 @@
       </div>
     </div>
   </div>
-  <div class="wrap">
-    <div class="trust-row reveal">
-      <div class="trust-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/></svg>
-        Lin 100% naturel
-      </div>
-      <div class="trust-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-        Pièce unique par coloris
-      </div>
-      <div class="trust-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>
-        Wave &amp; Orange Money
-      </div>
-      <div class="trust-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 12h13l-3-4M16 12l-3 4"/><path d="M17 6h3l1 6v5h-4"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>
-        Commande via WhatsApp
-      </div>
-    </div>
-  </div>
 </section>
 
 <!-- LA COLLECTION / BOUTIQUE -->
 <section id="boutique" style="background:var(--ivoire-doux);">
   <div class="wrap">
-    <div class="shell-divider reveal">
-      <span class="line"></span><svg><use href="#shell"/></svg><span class="line"></span>
-    </div>
     <div class="section-head reveal" style="justify-content:center; text-align:center; flex-direction:column; align-items:center;">
       <p class="eyebrow">La collection actuelle</p>
       <h2>Ensembles Lin</h2>
     </div>
 
-    <div class="atelier-grid reveal">
-      <a class="atelier-swatch linen" style="--c1:#3d5a78; --c2:#22364a;" href="https://wa.me/221785821289?text=Bonjour%20JOSY%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20l%27ensemble%20chemise%20bleu%20%2B%20short%20gris">
-        <span class="swatch-label">Chemise bleu<br>Short gris</span>
-      </a>
-      <a class="atelier-swatch linen" style="--c1:#eef0e6; --c2:#3fae8f;" href="https://wa.me/221785821289?text=Bonjour%20JOSY%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20l%27ensemble%20blanc%20de%20lait%20%2B%20short%20turquoise">
-        <span class="swatch-label">Chemise blanc de lait<br>Short vert turquoise</span>
-      </a>
-      <a class="atelier-swatch linen" style="--c1:#5a4030; --c2:#2e1f16;" href="https://wa.me/221785821289?text=Bonjour%20JOSY%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20l%27ensemble%20marron%20fonc%C3%A9">
-        <span class="swatch-label">Ensemble<br>marron foncé</span>
-      </a>
-      <a class="atelier-swatch linen" style="--c1:#9a958e; --c2:#5f5b56;" href="https://wa.me/221785821289?text=Bonjour%20JOSY%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20l%27ensemble%20gris">
-        <span class="swatch-label">Ensemble<br>gris</span>
-      </a>
-    </div>
-    <p class="note" style="text-align:center; margin-bottom:60px;">Touchez un coloris pour commander directement sur WhatsApp.</p>
-
     <div class="product-feature reveal">
       <div class="product-media split-media linen" style="--c1:#e4dccb; --c2:#cdbfa8; aspect-ratio:4/5;">
         <span class="placeholder-tag">[Photo produit à venir]</span>
       </div>
-      <div class="product-info">
-        <p class="eyebrow">Édition très limitée</p>
-        <h2>Ensemble chemise col français</h2>
-        <p class="product-desc">Chemise au col français, portée avec un short ou un pantalon large, fluide et structuré, pour un rendu harmonieux. Une pièce pensée pour durer, taillée dans un lin de qualité.</p>
+      <div class="product-info panel">
+        <h2 style="margin-bottom:6px;">Ensemble chemise col français</h2>
+        <p class="product-material">Lin — édition très limitée</p>
 
-        <dl class="product-meta">
-          <dt>Matière</dt>
-          <dd>Lin</dd>
+        <table class="spec-table">
+          <tr><th>Matière</th><td>Lin</td></tr>
+          <tr><th>Tailles</th><td>L, XL — sur mesure possible</td></tr>
+          <tr><th>Short + chemise courtes</th><td class="p-amount">15 000 FCFA</td></tr>
+          <tr><th>Pantalon + chemise longues</th><td class="p-amount">20 000 FCFA</td></tr>
+        </table>
 
-          <dt>Tailles</dt>
-          <dd>L, XL — tailles personnalisées sur demande</dd>
+        <ul class="colorway-list" id="colorwayList" style="list-style:none;">
+          <li class="colorway-row" data-colorway="Chemise bleu, short gris">
+            <span class="cw-name"><span class="dot" style="background:#3d5a78;"></span>Chemise bleu, short gris</span>
+            <select class="cw-config"><option value="Short + chemise courtes|15000">Short — 15 000 FCFA</option><option value="Pantalon + chemise longues|20000">Pantalon — 20 000 FCFA</option></select>
+            <select class="cw-taille"><option>L</option><option>XL</option><option>Sur mesure</option></select>
+            <button class="add-btn">Ajouter</button>
+          </li>
+          <li class="colorway-row" data-colorway="Chemise blanc de lait, short turquoise">
+            <span class="cw-name"><span class="dot" style="background:#3fae8f;"></span>Chemise blanc de lait, short turquoise</span>
+            <select class="cw-config"><option value="Short + chemise courtes|15000">Short — 15 000 FCFA</option><option value="Pantalon + chemise longues|20000">Pantalon — 20 000 FCFA</option></select>
+            <select class="cw-taille"><option>L</option><option>XL</option><option>Sur mesure</option></select>
+            <button class="add-btn">Ajouter</button>
+          </li>
+          <li class="colorway-row" data-colorway="Ensemble marron foncé">
+            <span class="cw-name"><span class="dot" style="background:#4a3226;"></span>Ensemble marron foncé</span>
+            <select class="cw-config"><option value="Short + chemise courtes|15000">Short — 15 000 FCFA</option><option value="Pantalon + chemise longues|20000">Pantalon — 20 000 FCFA</option></select>
+            <select class="cw-taille"><option>L</option><option>XL</option><option>Sur mesure</option></select>
+            <button class="add-btn">Ajouter</button>
+          </li>
+          <li class="colorway-row" data-colorway="Ensemble gris">
+            <span class="cw-name"><span class="dot" style="background:#8a8580;"></span>Ensemble gris</span>
+            <select class="cw-config"><option value="Short + chemise courtes|15000">Short — 15 000 FCFA</option><option value="Pantalon + chemise longues|20000">Pantalon — 20 000 FCFA</option></select>
+            <select class="cw-taille"><option>L</option><option>XL</option><option>Sur mesure</option></select>
+            <button class="add-btn">Ajouter</button>
+          </li>
+        </ul>
 
-          <dt>Tarifs</dt>
-          <dd>
-            <div class="price-row">
-              <span>Short + chemise manches courtes — <span class="p-amount">15 000 FCFA</span></span>
-              <span>Pantalon + chemise manches longues — <span class="p-amount">20 000 FCFA</span></span>
-            </div>
-          </dd>
-        </dl>
-
-        <a href="https://wa.me/221785821289?text=Bonjour%20JOSY%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20un%20ensemble%20en%20lin" class="btn btn-dark">Commander sur WhatsApp</a>
-        <span class="stock-note">Pièce unique par coloris — stock très limité. Paiement Wave ou Orange Money à la confirmation.</span>
+        <p class="product-desc" style="margin-top:24px;">Chemise au col français, portée avec un short ou un pantalon large, fluide et structuré.</p>
+        <span class="stock-note">Pièce unique par coloris. Paiement Wave ou Orange Money à la confirmation, commande finalisée sur WhatsApp.</span>
       </div>
     </div>
-    <p class="note">Photos, guide des tailles et prochaines collections seront ajoutés au fur et à mesure.</p>
+    <p class="note">Photos et guide des tailles seront ajoutés au fur et à mesure.</p>
   </div>
 </section>
 
@@ -555,8 +621,10 @@
       </div>
       <div class="foot-col">
         <h4>Navigation</h4>
-        <a href="#boutique">La Collection</a>
+        <a href="#top">Accueil</a>
+        <a href="#boutique">Boutique</a>
         <a href="#histoire">Notre histoire</a>
+        <a href="#manifesto">Manifeste</a>
         <a href="#contact">Contact</a>
       </div>
       <div class="foot-col">
@@ -578,7 +646,44 @@
   </div>
 </footer>
 
-<a href="https://wa.me/221785821289?text=Bonjour%20JOSY%2C%20je%20souhaite%20commander" class="wa-float">Commander sur WhatsApp</a>
+<div class="cart-overlay" id="cartOverlay">
+  <div class="cart-drawer">
+    <div class="cart-head">
+      <h3>Votre commande</h3>
+      <button class="close-btn" id="cartCloseBtn" aria-label="Fermer le panier">×</button>
+    </div>
+    <div class="cart-body">
+      <div id="cartItemsWrap"><p class="cart-empty">Votre panier est vide.</p></div>
+
+      <div class="cart-total"><span>Total</span><span id="cartTotal">0 FCFA</span></div>
+
+      <div class="cart-field">
+        <label>Nom</label>
+        <input type="text" id="custName" placeholder="Votre nom">
+      </div>
+      <div class="cart-field">
+        <label>Téléphone</label>
+        <input type="tel" id="custPhone" placeholder="Votre numéro">
+      </div>
+      <div class="cart-field">
+        <label>Quartier / ville</label>
+        <input type="text" id="custAddress" placeholder="Ex : Parcelles Assainies, Dakar">
+      </div>
+
+      <div class="cart-field">
+        <label>Mode de paiement</label>
+        <div class="pay-options">
+          <label><input type="radio" name="payMethod" value="Wave" checked>Wave</label>
+          <label><input type="radio" name="payMethod" value="Orange Money">Orange Money</label>
+        </div>
+      </div>
+    </div>
+    <div class="cart-foot">
+      <button class="btn btn-dark cart-send" id="cartSendBtn" disabled>Envoyer ma commande sur WhatsApp</button>
+      <p class="note" style="text-align:center;">Vous serez redirigé vers WhatsApp avec votre commande pré-remplie — rien n'est débité automatiquement.</p>
+    </div>
+  </div>
+</div>
 
 <script>
   const header = document.getElementById('siteHeader');
@@ -604,16 +709,93 @@
   }, { threshold: 0.15 });
   revealEls.forEach(el => io.observe(el));
 
-  // rotation des messages du bandeau promo
-  const promoSpans = document.querySelectorAll('#promoBar span');
-  let promoIndex = 0;
-  if (promoSpans.length > 1) {
-    setInterval(() => {
-      promoSpans[promoIndex].classList.remove('show');
-      promoIndex = (promoIndex + 1) % promoSpans.length;
-      promoSpans[promoIndex].classList.add('show');
-    }, 3800);
+  // ---------- panier ----------
+  const WHATSAPP_NUMBER = '221785821289';
+  let cart = [];
+
+  function formatFCFA(n){ return n.toLocaleString('fr-FR') + ' FCFA'; }
+
+  function renderCart(){
+    const wrap = document.getElementById('cartItemsWrap');
+    const totalEl = document.getElementById('cartTotal');
+    const sendBtn = document.getElementById('cartSendBtn');
+    const counts = document.querySelectorAll('#cartCount, #cartCountMobile');
+
+    if (cart.length === 0){
+      wrap.innerHTML = '<p class="cart-empty">Votre panier est vide.</p>';
+    } else {
+      wrap.innerHTML = cart.map((item, i) => `
+        <div class="cart-item">
+          <div>
+            <div>${item.colorway}</div>
+            <div class="ci-meta">${item.config} · Taille ${item.taille}</div>
+          </div>
+          <div style="text-align:right;">
+            <div>${formatFCFA(item.price)}</div>
+            <button class="ci-remove" data-index="${i}">Retirer</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    totalEl.textContent = formatFCFA(total);
+    counts.forEach(el => el.textContent = cart.length);
+    sendBtn.disabled = cart.length === 0;
+
+    wrap.querySelectorAll('.ci-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        cart.splice(Number(btn.dataset.index), 1);
+        renderCart();
+      });
+    });
   }
+
+  document.querySelectorAll('.colorway-row .add-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('.colorway-row');
+      const [config, price] = row.querySelector('.cw-config').value.split('|');
+      const taille = row.querySelector('.cw-taille').value;
+      cart.push({
+        colorway: row.dataset.colorway,
+        config,
+        taille,
+        price: Number(price)
+      });
+      renderCart();
+      openCart();
+    });
+  });
+
+  const cartOverlay = document.getElementById('cartOverlay');
+  function openCart(){ cartOverlay.classList.add('open'); }
+  function closeCart(){ cartOverlay.classList.remove('open'); }
+  document.getElementById('cartBtn').addEventListener('click', openCart);
+  document.getElementById('cartBtnMobile').addEventListener('click', () => { menu.classList.remove('open'); openCart(); });
+  document.getElementById('cartCloseBtn').addEventListener('click', closeCart);
+  cartOverlay.addEventListener('click', (e) => { if (e.target === cartOverlay) closeCart(); });
+
+  document.getElementById('cartSendBtn').addEventListener('click', () => {
+    const name = document.getElementById('custName').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    const address = document.getElementById('custAddress').value.trim();
+    const payMethod = document.querySelector('input[name="payMethod"]:checked').value;
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+    let msg = 'Bonjour JOSY, je souhaite passer une commande :\n\n';
+    cart.forEach(item => {
+      msg += `- ${item.colorway} — ${item.config}, taille ${item.taille} — ${formatFCFA(item.price)}\n`;
+    });
+    msg += `\nTotal : ${formatFCFA(total)}\n\n`;
+    msg += `Nom : ${name || 'à préciser'}\n`;
+    msg += `Téléphone : ${phone || 'à préciser'}\n`;
+    msg += `Quartier/ville : ${address || 'à préciser'}\n`;
+    msg += `Paiement : ${payMethod}`;
+
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+  });
+
+  renderCart();
 </script>
 
 </body>
